@@ -1,6 +1,6 @@
-setwd("C:/Users/Pablo/Dropbox/R_functions/multifit")
+setwd("C:/Users/Pablo/Dropbox/R_functions/multifit/fake_data")
 
-multifit <- function(mod, multief, data, formula = NULL, args = NULL, criterion = "AIC",
+multifit <- function(mod, multief, data = NULL, formula = NULL, args = NULL, criterion = "AIC",
                      signif = TRUE, alpha = 0.05, print_sum = FALSE, plot_est = FALSE,
                      xlab = "Radio [m]", labels = NULL, type = "b", ...){
   
@@ -65,21 +65,26 @@ multifit <- function(mod, multief, data, formula = NULL, args = NULL, criterion 
   
   # Function. Summary table of the predictor variable at each spatial scale
   lands_table <- function(multief, data){
-    table <- data.frame(spatial_scale = as.character(multief), 
-                        n             = rep(0, length(multief)),
-                        min           = rep(0, length(multief)),
-                        max           = rep(0, length(multief)),
-                        range         = rep(0, length(multief)),
-                        mean          = rep(0, length(multief)),
-                        median        = rep(0, length(multief)))
-    for(i in 1:length(multief)){
-      unique_vec <- unique(data[, as.character(multief[i])])
-      table[table$spatial_scale == multief[i], "n"]      <- length(na.omit(unique_vec))
-      table[table$spatial_scale == multief[i], "min"]    <- min(na.omit(unique_vec))
-      table[table$spatial_scale == multief[i], "max"]    <- max(na.omit(unique_vec))
-      table[table$spatial_scale == multief[i], "range"]  <- range(na.omit(unique_vec))[2] - range(na.omit(unique_vec))[1]
-      table[table$spatial_scale == multief[i], "mean"]   <- mean(na.omit(unique_vec))
-      table[table$spatial_scale == multief[i], "median"] <- median(na.omit(unique_vec))
+    if(!is.null(data)){
+      table <- data.frame(spatial_scale = as.character(multief), 
+                          n             = rep(0, length(multief)),
+                          min           = rep(0, length(multief)),
+                          max           = rep(0, length(multief)),
+                          range         = rep(0, length(multief)),
+                          mean          = rep(0, length(multief)),
+                          median        = rep(0, length(multief)))
+      for(i in 1:length(multief)){
+        unique_vec <- unique(data[, as.character(multief[i])])
+        table[table$spatial_scale == multief[i], "n"]      <- length(na.omit(unique_vec))
+        table[table$spatial_scale == multief[i], "min"]    <- min(na.omit(unique_vec))
+        table[table$spatial_scale == multief[i], "max"]    <- max(na.omit(unique_vec))
+        table[table$spatial_scale == multief[i], "range"]  <- range(na.omit(unique_vec))[2] - range(na.omit(unique_vec))[1]
+        table[table$spatial_scale == multief[i], "mean"]   <- mean(na.omit(unique_vec))
+        table[table$spatial_scale == multief[i], "median"] <- median(na.omit(unique_vec))
+      }
+    } else {
+      table <- NA
+      message("lands_summary could not be created as no data was specified")
     }
     return(table)
   }
@@ -386,7 +391,7 @@ complement <- function(y, rho, x) {
   if (missing(x)) x <- rnorm(length(y)) # Optional: supply a default if `x` is not given
   y.perp <- residuals(lm(x ~ y))
   out <- rho * sd(y.perp) * y + y.perp * sd(y) * sqrt(1 - rho^2)
-  out <- abs(out + min(out))
+  out <- out + abs(min(out))
   #max lands
   tot <- max(out)*runif(1, 1.2, 1.9)
   out <- out/tot
@@ -397,13 +402,13 @@ complement <- function(y, rho, x) {
 initial.y <- round(rnorm(50, mean = 50, sd = 20))
 x <- 1:50 # Optional
 #500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000
-rho <- c(0.11, 0.3, 0.65, 0.6, 0.55, 0.52, 0.51, 0.8, 0.78, 0.45)
+rho <- c(0.11, 0.04, 0.51, 0.64, 0.92, 0.82, 0.74, 0.6, 0.52, 0.39)
 df  <- data.frame(y = initial.y)
 for(i in 1:length(rho)){
   df[paste("radio_", i, sep = "")] <- as.vector(complement(initial.y, rho[i], x))
 }
 
-write.table(df2, "sim_data_random_site.txt", sep = " ", quote = FALSE)
+write.table(bladat, "fake_data.txt", sep = " ", quote = FALSE)
 
 ggplot(df, aes(x = radio_5, y = y)) + 
   geom_smooth(method="lm", color="Black") + 
@@ -415,7 +420,7 @@ ggplot(df, aes(x = radio_5, y = y)) +
 initial.y <- rpois(50, c(15, 5, 25))
 x <- 1:50 # Optional
 #500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000
-rho <- c(0.11, 0.3, 0.65, 0.6, 0.55, 0.52, 0.51, 0.8, 0.78, 0.45)
+rho <- c(0.11, 0.04, 0.1, 0.35, 0.92, 0.82, 0.6, 0.51, 0.44, 0.38)
 df  <- data.frame(y = initial.y)
 for(i in 1:length(rho)){
   df[paste("radio_", i, sep = "")] <- as.vector(complement(initial.y, rho[i], x))
@@ -443,6 +448,25 @@ for(k in 1:length(rad)){
   }
 }
 
+# adding local vegetation richness data
+
+
+complement2 <- function(y, rho, x) {
+  if (missing(x)) x <- rnorm(length(y)) # Optional: supply a default if `x` is not given
+  y.perp <- residuals(lm(x ~ y))
+  out <- rho * sd(y.perp) * y + y.perp * sd(y) * sqrt(1 - rho^2)
+  out <- out + abs(min(out))
+  print(min(out))
+  out
+}
+
+x <- 1:50 # Optional
+rho <- 0.15
+as.vector(complement2(initial.y, rho, x))
+df3 <- data.frame(veg_richness = rep(x = as.vector(complement2(initial.y, rho, x)), each = 10))
+
+bladat <- cbind(df2, df3)
+
 ### ZERO INFLATED DATA
 df2 <- data.frame(S = c(0, 0, 0, 0, 0, 0, 1, 3, 6, 0, 0, 8, 10, 0), 
                   R1 = c(4, 6, 8, 1, 0, 6, 7, 9, 8 ,7 ,7 ,9, 4 ,6),
@@ -464,13 +488,13 @@ unique_vec <- unique(df$R_500)
 
 
 #lm
-fits <- multifit(mod = "lm", multief = rad, formula =  S ~ multief, data = df, criterion = "AIC", plot_est = T)
+fits <- multifit(mod = "lm", multief = rad, formula =  S ~ multief, data = df, criterion = "R2", plot_est = T)
 #lmer #no p.values
 fits <- multifit(mod = "lmer", multief = rad, formula =  S ~ multief + (1|site), data = df, criterion = "AIC", plot_est = T)
 #glm
 fits <- multifit(mod = "glm", multief = rad, formula =  S ~ multief, args = c("family = poisson"), data = df, criterion = "AIC", plot_est = T)
 #glmer
-fits <- multifit(mod = "glmer", multief = rad, formula =  S ~ multief + (1|site), args = c("family = poisson"), data = df, criterion = "AIC", plot_est = T)
+fits <- multifit(mod = "glmer", multief = rad, formula =  S ~ multief + (1|site), args = c("family = poisson"), data = bladat, criterion = "AIC", plot_est = T)
 #zero inflation
 df2 <- data.frame(S = c(0, 0, 0, 0, 0, 0, 1, 3, 6, 0, 0, 8, 10, 0), 
                   R1 = c(4, 6, 8, 1, 0, 6, 7, 9, 8 ,7 ,7 ,9, 4 ,6),
