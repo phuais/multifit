@@ -11,7 +11,7 @@ If you encounter any problems in using the code please email me, and I will do m
 Best wishes,
 
 Pablo Yair Huais - phuais@gmail.com<br />
-<span style="color:red">Biologist and PhD student</span><br />
+Biologist and PhD student<br />
 Instituto Multidisciplinario de Biología Vegetal (IMBIV}<br />
 Universidad Nacional de Córdoba (UNC)<br />
 
