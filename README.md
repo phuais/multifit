@@ -26,3 +26,4 @@ phuais@gmail.com
 README.md:  this text file. <br />
 manual.pdf: an R-style manual with full description of the function on how it works.<br />
 multifit.R: the R code of the function.
+fake_data: a folder containing fake data to be used only for examples.
