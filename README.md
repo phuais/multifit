@@ -17,7 +17,8 @@ Universidad Nacional de Córdoba (UNC)<br />
 
 **Repository Contents**
 
-README.md:  this text file.<br />
+README.md: this text file.<br />
+LICENSE.txt: the license of the repository.<br />
 manual.pdf: an R-style manual with full description of the function on how it works.<br />
 multifit.R: the R code of the function.<br />
 fake_data: a folder containing fake data to be used only for example purposes.
