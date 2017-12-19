@@ -1,6 +1,6 @@
 multifit <- function(mod, multief, data = NULL, formula = NULL, args = NULL, criterion = "AIC",
                      signif = TRUE, alpha = 0.05, print_sum = FALSE, plot_est = FALSE,
-                     xlab = "Radio [m]", labels = NULL, type = "b", ...){
+                     xlab = "Radio [m]", labels = NULL, type = "b", pch = c(1, 16)){
   
   # Arguments checkings
   if(!is.character(mod) || length(mod) != 1) stop("Argument mod must be a character of length 1")
@@ -28,7 +28,8 @@ multifit <- function(mod, multief, data = NULL, formula = NULL, args = NULL, cri
   if(!is.logical(print_sum) || length(print_sum) != 1) stop("Argument print_sum must be logical")
   if(!is.logical(plot_est) || length(plot_est) != 1) stop("Argument plot_est must be logical")
   if(!is.null(labels)){ if(!is.character(as.character(labels))) stop("Argument labels must be NULL or a character vector") }
-  
+  if(!is.numeric(pch)) stop("Argument pch must be numeric and of length 2")
+
   # Check if the function to be applied exists in the environment
   if(!exists(mod)) stop(paste("Could not find function '", mod, "'. Make sure that the necessary package is loaded", sep = ""))
   
@@ -236,14 +237,14 @@ multifit <- function(mod, multief, data = NULL, formula = NULL, args = NULL, cri
     message(paste("The following model/s threw an error and could not be included in the analysis: ", mod_errors, sep = ""))
   }
     
-  # Function. Significance codes plotting function
-  f_sign <- function(y.values){
+  # Function. Significance extraction of estimates
+  f_sign <- function(p.values){
     if(any(!is.na(p.values))){
-      p.sign <- ifelse(p.values < 0.001, "***",
-                       ifelse(p.values < 0.01, "**",
-                              ifelse(p.values < alpha, "*", NA)))
-      text(1:length(multief), y.values, p.sign, pos = 3, cex = 1.5)
+      p.sign <- ifelse(p.values < alpha, TRUE, FALSE)
+    } else {
+      p.sign <- rep(TRUE, length(p.values))
     }
+    return(p.sign)
   }
 
   # If there are GoF values to work with...
@@ -259,29 +260,30 @@ multifit <- function(mod, multief, data = NULL, formula = NULL, args = NULL, cri
     }
     # Plot the model selection result
     if(is.null(labels)){ labels <- multief }
-    plot(1:length(multief), fits.GoF, xlab = xlab, xaxt = "n", ylab = criterion[1], 
-         type = type, ...)
-    axis(1, at = 1:length(multief), labels = labels)
-    title(main = "Model selection", line = 3)
-    # Plot significance codes, if required
     if(signif){
       if(!all(is.na(p.values))){
-        f_sign(fits.GoF)
+        p.sign <- f_sign(p.values)
       } else {
-        message("Significance codes could not be plotted cause p.values could not be extracted")
+        p.sign <- rep(1, length(p.values))
+        message("p.values could not be extracted")
       }
-      mtext(paste("Signif. codes:  0 '***' 0.001 '**' 0.01 '*'", alpha, "' ' 1"), cex = 0.75, adj = 0, line = 1)
+    } else {
+      p.sign <- rep(0, length(p.values))
     }
-    
+    temp_df <- data.frame(x = 1:length(multief), y = fits.GoF, signif = as.numeric(p.sign + 1))
+    plot(y ~ x, xlab = xlab, xaxt = "n", ylab = criterion[1], 
+         type = type, pch = pch[signif], col = col[signif], data = temp_df, ...)
+    axis(1, at = 1:length(multief), labels = labels)
+    title(main = "Model selection", line = 3)
+
     # Plot estimates, if required
     if(plot_est){
-      plot(1:length(multief), e.values, xlab = xlab, xaxt = "n", ylab = "Estimate", 
-           type = type, ...)
+      temp_df <- data.frame(x = 1:length(multief), y = e.values, signif = as.numeric(p.sign + 1))
+      plot(y ~ x, xlab = xlab, xaxt = "n", ylab = "Estimate", 
+           type = type, pch = pch[signif], col = col[signif], data = temp_df, ...)
       abline(0, 0, col = "gray")
       axis(1, at = 1:length(multief), labels = labels)
       title(main = "Estimates", line = 3)
-      # Plot significance codes, if required
-      if(signif) f_sign(e.values)
     }
     
     # Record plot and restablish original par options
