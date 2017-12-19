@@ -28,7 +28,7 @@ multifit <- function(mod, multief, data = NULL, formula = NULL, args = NULL, cri
   if(!is.logical(print_sum) || length(print_sum) != 1) stop("Argument print_sum must be logical")
   if(!is.logical(plot_est) || length(plot_est) != 1) stop("Argument plot_est must be logical")
   if(!is.null(labels)){ if(!is.character(as.character(labels))) stop("Argument labels must be NULL or a character vector") }
-  if(!is.numeric(pch)) stop("Argument pch must be numeric and of length 2")
+  if(!is.numeric(pch)) stop("Argument pch must be numeric")
 
   # Check if the function to be applied exists in the environment
   if(!exists(mod)) stop(paste("Could not find function '", mod, "'. Make sure that the necessary package is loaded", sep = ""))
