@@ -272,7 +272,7 @@ multifit <- function(mod, multief, data = NULL, formula = NULL, args = NULL, cri
     }
     temp_df <- data.frame(x = 1:length(multief), y = fits.GoF, signif = as.numeric(p.sign + 1))
     plot(y ~ x, xlab = xlab, xaxt = "n", ylab = criterion[1], 
-         type = type, pch = pch[signif], data = temp_df)
+         type = type, pch = pch[signif], bty = "l", data = temp_df)
     axis(1, at = 1:length(multief), labels = labels)
     title(main = "Model selection")
 
@@ -280,7 +280,7 @@ multifit <- function(mod, multief, data = NULL, formula = NULL, args = NULL, cri
     if(plot_est){
       temp_df <- data.frame(x = 1:length(multief), y = e.values, signif = as.numeric(p.sign + 1))
       plot(y ~ x, xlab = xlab, xaxt = "n", ylab = "Estimate", 
-           type = type, pch = pch[signif], data = temp_df)
+           type = type, pch = pch[signif], bty = "l", data = temp_df)
       abline(0, 0, col = "gray")
       axis(1, at = 1:length(multief), labels = labels)
       title(main = "Estimates")
