@@ -2,7 +2,7 @@ multifit <- function(mod, multief, data = NULL, formula = NULL, args = NULL, cri
                      signif = TRUE, alpha = 0.05, print_sum = FALSE, plot_est = FALSE,
                      xlab = "Radio [m]", labels = NULL, type = "b", pch = c(1, 16)){
   
-  # Arguments checkings
+  # Arguments checking
   if(!is.character(mod) || length(mod) != 1) stop("Argument mod must be a character of length 1")
   if(!is.character(multief)) stop("Argument multief must be a character vector")
   if(!is.null(args)){ if(!is.character(args)) stop("Argument args must be NULL or a character vector") }
