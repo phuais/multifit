@@ -1,4 +1,4 @@
-multifit <- function(mod, multief, data = NULL, formula = NULL, args = NULL, criterion = "AIC",
+multifit <- function(mod, multief, data, formula = NULL, args = NULL, criterion = "AIC",
                      signif = TRUE, alpha = 0.05, print_sum = FALSE, plot_est = FALSE,
                      xlab = "Radio [m]", labels = NULL, type = "b", pch = c(1, 16)){
   
@@ -13,7 +13,7 @@ multifit <- function(mod, multief, data = NULL, formula = NULL, args = NULL, cri
       }
     } else {
       if(!is.function(tryCatch(eval(parse(text = criterion[1])), error = function(e) FALSE))){
-        stop("Argument criterion does not refers to an existing function of the global environment")
+        stop("Argument criterion does not refers to an existing function at the global environment")
       } else {
         if(!criterion[2] %in% c("max", "min")){
           stop("For user-defined functions, the second element of argument criterion must be 'max' or 'min'")
@@ -64,26 +64,21 @@ multifit <- function(mod, multief, data = NULL, formula = NULL, args = NULL, cri
   
   # Function. Summary table of the predictor variable at each spatial scale
   lands_table <- function(multief, data){
-    if(!is.null(data)){
-      table <- data.frame(spatial_scale = as.character(multief), 
-                          n             = rep(0, length(multief)),
-                          min           = rep(0, length(multief)),
-                          max           = rep(0, length(multief)),
-                          range         = rep(0, length(multief)),
-                          mean          = rep(0, length(multief)),
-                          median        = rep(0, length(multief)))
-      for(i in 1:length(multief)){
-        unique_vec <- unique(data[, as.character(multief[i])])
-        table[table$spatial_scale == multief[i], "n"]      <- length(na.omit(unique_vec))
-        table[table$spatial_scale == multief[i], "min"]    <- min(na.omit(unique_vec))
-        table[table$spatial_scale == multief[i], "max"]    <- max(na.omit(unique_vec))
-        table[table$spatial_scale == multief[i], "range"]  <- range(na.omit(unique_vec))[2] - range(na.omit(unique_vec))[1]
-        table[table$spatial_scale == multief[i], "mean"]   <- mean(na.omit(unique_vec))
-        table[table$spatial_scale == multief[i], "median"] <- median(na.omit(unique_vec))
-      }
-    } else {
-      table <- NA
-      message("lands_summary could not be created as no data was specified")
+    table <- data.frame(spatial_scale = as.character(multief), 
+                        n             = rep(0, length(multief)),
+                        min           = rep(0, length(multief)),
+                        max           = rep(0, length(multief)),
+                        range         = rep(0, length(multief)),
+                        mean          = rep(0, length(multief)),
+                        median        = rep(0, length(multief)))
+    for(i in 1:length(multief)){
+      unique_vec <- unique(data[, as.character(multief[i])])
+      table[table$spatial_scale == multief[i], "n"]      <- length(na.omit(unique_vec))
+      table[table$spatial_scale == multief[i], "min"]    <- min(na.omit(unique_vec))
+      table[table$spatial_scale == multief[i], "max"]    <- max(na.omit(unique_vec))
+      table[table$spatial_scale == multief[i], "range"]  <- range(na.omit(unique_vec))[2] - range(na.omit(unique_vec))[1]
+      table[table$spatial_scale == multief[i], "mean"]   <- mean(na.omit(unique_vec))
+      table[table$spatial_scale == multief[i], "median"] <- median(na.omit(unique_vec))
     }
     return(table)
   }
