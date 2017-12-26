@@ -29,7 +29,7 @@ multifit <- function(mod, multief, data, formula = NULL, args = NULL, criterion 
   if(!is.logical(plot_est) || length(plot_est) != 1) stop("Argument plot_est must be logical")
   if(!is.null(labels)){ if(!is.character(as.character(labels))) stop("Argument labels must be NULL or a character vector") }
   if(!is.numeric(pch)) stop("Argument pch must be numeric")
-
+  
   # Check if the function to be applied exists in the environment
   if(!exists(mod)) stop(paste("Could not find function '", mod, "'. Make sure that the necessary package is loaded", sep = ""))
   
@@ -45,7 +45,7 @@ multifit <- function(mod, multief, data, formula = NULL, args = NULL, criterion 
   fits         <- vector("list", length(multief))
   fits.GoF     <- rep(0, length(multief))
   if(!is.null(formula)) 
-    init.formula <- deparse(substitute(formula))
+    init.formula <- paste(deparse(substitute(formula)), collapse = "")
   sum.list     <- vector("list", length(multief))
   p.values     <- rep(0, length(multief))
   e.values     <- rep(0, length(multief))
@@ -55,9 +55,9 @@ multifit <- function(mod, multief, data, formula = NULL, args = NULL, criterion 
   effect_mess  <- NULL
   mod_errors   <- vector()
   ele          <- FALSE
-
+  
   # Check if 'multief' was a defined as a predictor variable
-  if(!grepl("multief", deparse(substitute(formula)))){
+  if(!grepl("multief", paste(deparse(substitute(formula)), collapse = ""))){
     if(!grepl("multief", initial.args))
       stop("The formula, or the fixed effects defined in 'args', must include the expression 'multief' as a predictor variable")
   }
@@ -82,7 +82,7 @@ multifit <- function(mod, multief, data, formula = NULL, args = NULL, criterion 
     }
     return(table)
   }
-
+  
   # Function. Extract the 'Good of Fitness' (AIC, BIC or R2) value for the models
   extractGoF <- function(fitted_model, criterion){
     aic   <- function(x){ tail(extractAIC(x), n = 1) }
@@ -98,7 +98,7 @@ multifit <- function(mod, multief, data, formula = NULL, args = NULL, criterion 
     } else {
       value <- do.call(criterion[1], list(fitted_model))
     }
-
+    
     if(is.null(value) || is.na(value)){
       if(length(criterion) == 1){
         if(grepl("quasipoisson", args) && criterion %in% c("AIC", "BIC")){
@@ -111,11 +111,11 @@ multifit <- function(mod, multief, data, formula = NULL, args = NULL, criterion 
       } else {
         stop(paste("Could not get the '", criterion[1], "' value for the specified models. Try another criterion?", sep = ""), call. = FALSE)
       }
-    } else {
-      return(value)
+      } else {
+        return(value)
+      }
     }
-  }
-
+  
   # Function. Extract coefficients of the models
   extract_coeff <- function(summary, i){
     coeff   <- summary$coefficients
@@ -184,7 +184,7 @@ multifit <- function(mod, multief, data, formula = NULL, args = NULL, criterion 
     out <- list(value = val, warnings = warns, messages = mess)
     return(out)
   } 
-
+  
   # Run all models
   for(i in 1:length(multief)){
     
@@ -198,7 +198,7 @@ multifit <- function(mod, multief, data, formula = NULL, args = NULL, criterion 
     } else {
       expression <- paste(mod, "(data =", deparse(substitute(data)), ",", args, ")")
     }
-
+    
     new_fit <- running(eval(parse(text = expression)), i)
     if(!any(class(new_fit$value) %in% c("simpleError", "error"))){
       fits[[i]]          <- new_fit$value
@@ -231,7 +231,7 @@ multifit <- function(mod, multief, data, formula = NULL, args = NULL, criterion 
     mod_errors <- paste(mod_errors, collapse = ", ")
     message(paste("The following model/s threw an error and could not be included in the analysis: ", mod_errors, sep = ""))
   }
-    
+  
   # Function. Significance extraction of estimates
   f_sign <- function(p.values){
     if(any(!is.na(p.values))){
@@ -241,7 +241,7 @@ multifit <- function(mod, multief, data, formula = NULL, args = NULL, criterion 
     }
     return(p.sign)
   }
-
+  
   # If there are GoF values to work with...
   if(any(!is.na(fits.GoF))){
     get_mfrow <- par()$mfrow
@@ -270,7 +270,7 @@ multifit <- function(mod, multief, data, formula = NULL, args = NULL, criterion 
          type = type, pch = pch[signif], bty = "l", data = temp_df)
     axis(1, at = 1:length(multief), labels = labels)
     title(main = "Model selection")
-
+    
     # Plot estimates, if required
     if(plot_est){
       temp_df <- data.frame(x = 1:length(multief), y = e.values, signif = as.numeric(p.sign + 1))
@@ -303,7 +303,7 @@ multifit <- function(mod, multief, data, formula = NULL, args = NULL, criterion 
     sum <- summary(fits[[do.call(decision_func, list(fits.GoF))]])
     message("The model including the effect '", out, "' was the best model according to the specified criterion (", 
             criterion[1], ", ", decision_func, ")")
-
+    
   } else {
     # If all models threw errors...
     warning("Fatal errors were found in all the models. Check them out by typing $Models to the generated object", call. = FALSE)
@@ -314,7 +314,7 @@ multifit <- function(mod, multief, data, formula = NULL, args = NULL, criterion 
   
   # Generate summary table of landscape attribute at each spatial scale
   lands_summary <- lands_table(multief, data)
-
+  
   # Print summary of the 'best' model?
   if(print_sum && !is.null(sum)) print(sum)
   
@@ -323,7 +323,7 @@ multifit <- function(mod, multief, data, formula = NULL, args = NULL, criterion 
     message(paste("Warnings were found in the models with the following effects:", paste(effect_warns, collapse = ", ")))
   if(!is.null(effect_mess))
     message(paste("Messages were found in the models with the following effects:", paste(effect_mess, collapse = ", ")))
-
+  
   # Return a list with relevant information of the analysis
   out_obj <- list(lands_summary = lands_summary, summary = summ, plot = plot, models = fits, warnings = mod_warn, messages = mod_mess)
   invisible(out_obj)
