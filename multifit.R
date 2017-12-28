@@ -39,13 +39,18 @@ multifit <- function(mod, multief, data, formula = NULL, args = NULL, criterion 
   if(!all(multief %in% colnames(data)))
     warning("Could not find some of the multi-effects as columns of the provided data")
   
+  # Function. Expression to string convertion.
+  expr_depar <- function(x){
+    paste(deparse(x, width.cutoff = 500), collapse = "")
+  }
+  
   # Objects definition
   multief      <- factor(multief, levels = multief)
   initial.args <- paste(args, collapse = ",")
   fits         <- vector("list", length(multief))
   fits.GoF     <- rep(0, length(multief))
   if(!is.null(formula)) 
-    init.formula <- paste(deparse(substitute(formula)), collapse = "")
+    init.formula <- expr_depar(formula)
   sum.list     <- vector("list", length(multief))
   p.values     <- rep(0, length(multief))
   e.values     <- rep(0, length(multief))
@@ -57,7 +62,7 @@ multifit <- function(mod, multief, data, formula = NULL, args = NULL, criterion 
   ele          <- FALSE
   
   # Check if 'multief' was a defined as a predictor variable
-  if(!grepl("multief", paste(deparse(substitute(formula)), collapse = ""))){
+  if(!grepl("multief", expr_depar(formula))){
     if(!grepl("multief", initial.args))
       stop("The formula, or the fixed effects defined in 'args', must include the expression 'multief' as a predictor variable")
   }
