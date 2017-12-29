@@ -39,7 +39,7 @@ multifit <- function(mod, multief, data, formula = NULL, args = NULL, criterion 
   if(!all(multief %in% colnames(data)))
     warning("Could not find some of the multi-effects as columns of the provided data")
   
-  # Function. Expression to string convertion.
+  # Function. Expression to string convertion
   expr_depar <- function(x){
     paste(deparse(x, width.cutoff = 500), collapse = "")
   }
@@ -124,7 +124,7 @@ multifit <- function(mod, multief, data, formula = NULL, args = NULL, criterion 
   # Function. Extract coefficients of the models
   extract_coeff <- function(summary, i){
     coeff   <- summary$coefficients
-    # If the model is a zero-inflated one (zeroingl or hurdle)
+    # If the model is a zero-inflated one (zeroinfl or hurdle from package pscl)
     if(is.list(coeff) && names(coeff) == c("count", "zero")){
       opt <- names(coeff)
       if(ele == FALSE){
@@ -175,7 +175,7 @@ multifit <- function(mod, multief, data, formula = NULL, args = NULL, criterion 
   }
   
   # Function. Manage model's errors, warnings and messages
-  running <- function(expr, i) {
+  running <- function(expr) {
     warns <- mess <- NULL
     warn_handler <- function(w) {
       warns <<- c(warns, list(w))
@@ -204,7 +204,7 @@ multifit <- function(mod, multief, data, formula = NULL, args = NULL, criterion 
       expression <- paste(mod, "(data =", deparse(substitute(data)), ",", args, ")")
     }
     
-    new_fit <- running(eval(parse(text = expression)), i)
+    new_fit <- running(eval(parse(text = expression)))
     if(!any(class(new_fit$value) %in% c("simpleError", "error"))){
       fits[[i]]          <- new_fit$value
       fits.GoF[i]        <- extractGoF(fits[[i]], criterion)
