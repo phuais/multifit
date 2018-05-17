@@ -1,7 +1,7 @@
 # multifit: an R function
 > ### Multi-scale analysis in landscape ecology
 
-The main goal of *multifit* is to ease the process of multi-scale analysis for landscape ecologists. In this way, *multifit* allows the user to run many statistical models at the same time (i.e. one for each studied spatial scale), visualize the output in a simple way, allowing the user to select the 'best model'. A comprehensive description of the function usage is detailed in the pdf manual of this repository.
+The main goal of *multifit* is to automate the process of multi-scale analysis for landscape ecologists. In this way, *multifit* allows the user to run many statistical models at the same time (i.e. one for each studied spatial scale), visualize the output in a simple way, allowing the user to select the best model according to a specified criterion. A comprehensive description of the function usage is detailed in the pdf manual of this repository.
 
 The purpose of sharing the code here on GitHub is to make it available in executable format. The GitHub site will automatically display the latest version of the code. You can download the code from GitHub by clicking the 'Clone or Download' button.
 
