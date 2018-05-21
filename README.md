@@ -11,7 +11,7 @@ Best wishes,
 
 Pablo Yair Huais - phuais@gmail.com<br />
 Biologist and PhD student<br />
-Instituto Multidisciplinario de Biología Vegetal (IMBIV}<br />
+Instituto Multidisciplinario de Biología Vegetal (IMBIV)<br />
 Universidad Nacional de Córdoba (UNC)<br />
 
 **Repository Contents**
