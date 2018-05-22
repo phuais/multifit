@@ -21,4 +21,4 @@ Universidad Nacional de Córdoba (UNC)<br />
 - manual_EN.pdf: an R-style manual in english with full description of the function of how it works.<br />
 - manual_ES.pdf: the same manual but in spanish.<br />
 - multifit.R: the R code of the function.<br />
-- fake_data: a folder containing fake data to be used only for example purposes.
+- fake_data: a folder containing simulated data to be used only for example purposes.
