@@ -7,6 +7,11 @@ The purpose of sharing the code here on GitHub is to make it available in execut
 
 If you encounter any problems in using the code please email me, and I will do my best to resolve the issue. Also, if you are familiar with R-programming, you may take the code and change it to adapt it for particular purposes. Let me know if you wish to improve the code, I would be happy to have collaborators.
 
+If you use this tool, please cite the paper which describes its usage, accepted for publication in Landscape Ecology:
+
+Huais, PY. 2018. multifit: an R function for multi-scale analysis in landscape ecology. Landscape Ecology. 
+https://doi.org/10.1007/s10980-018-0657-5
+
 Best wishes,
 
 Pablo Yair Huais - phuais@gmail.com<br />
