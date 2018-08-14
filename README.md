@@ -9,7 +9,7 @@ If you encounter any problems in using the code please email me, and I will do m
 
 If you use this tool, please cite the paper which describes its usage, accepted for publication in Landscape Ecology:
 
-Huais, PY. 2018. multifit: an R function for multi-scale analysis in landscape ecology. Landscape Ecology. 
+Huais, PY. 2018. multifit: an R function for multi-scale analysis in landscape ecology. Landscape Ecology, 33: 1023. 
 https://doi.org/10.1007/s10980-018-0657-5
 
 Best wishes,
