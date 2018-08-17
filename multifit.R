@@ -135,7 +135,6 @@ multifit <- function(mod, multief, data, formula = NULL, args = NULL, criterion 
   
   # Function. Extract the 'Good of Fitness' (AIC, BIC or R2) value for the models
   extractGoF <- function(fitted_model, criterion){
-    #aic   <- function(x){ tail(extractAIC(x), n = 1) }
     value <- NULL
     
     if(length(criterion) == 1){
